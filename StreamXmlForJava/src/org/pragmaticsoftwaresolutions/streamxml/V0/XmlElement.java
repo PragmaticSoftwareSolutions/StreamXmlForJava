@@ -26,7 +26,7 @@ import java.io.OutputStreamWriter;
  */
 public interface XmlElement extends XmlNode {
 
-	public void streamXmlPartially(OutputStreamWriter writer, XmlNode child)
+	public void streamXmlPartially(OutputStreamWriter writer, XmlNode child, XmlNode callingDecendentChild)
 			throws IOException;
 
 }

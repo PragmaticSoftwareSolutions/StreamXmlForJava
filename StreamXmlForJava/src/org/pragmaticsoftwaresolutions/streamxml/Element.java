@@ -38,7 +38,7 @@ public interface Element {
      * When this element is not the root. 
      * The start tags of the ancestor path are streamed.
      * The start tags, child nodes and end tags of the elements before the ancestor path are streamed.
-     * When this tag has child nodes. The start tag and child nodes of this element are streamed.
+     * The start tag, child nodes and end tag of this element are streamed.
      * </p>
      * <p>
      * When this element is the root.  The start tag if not already streamed, the current child nodes and end tag of the root are streamed.
@@ -50,7 +50,7 @@ public interface Element {
      * @param writer the output stream writer
      * @throws IOException input or output exception
      */
-    Element stream(OutputStreamWriter writer) throws IOException;
+    void stream(OutputStreamWriter writer) throws IOException;
 
     /**
      * <p>
@@ -76,7 +76,7 @@ public interface Element {
      * @param flush flushes the stream when it is true
      * @throws IOException input or output exception
      */
-    Element stream(OutputStreamWriter writer, boolean flush) throws IOException;
+    void stream(OutputStreamWriter writer, boolean flush) throws IOException;
 
     /**
      * <p>

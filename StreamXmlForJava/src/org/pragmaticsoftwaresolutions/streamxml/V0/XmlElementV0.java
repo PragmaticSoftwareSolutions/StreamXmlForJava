@@ -79,42 +79,23 @@ public class XmlElementV0 implements Element, XmlElement {
 	}
  
 	@Override
-	public Element stream(OutputStreamWriter writer) throws IOException {
-		return this.stream(writer, true);
+	public void stream(OutputStreamWriter writer) throws IOException {
+		this.stream(writer, true);
 	}
 	
 	@Override
-	public Element stream(OutputStreamWriter writer, boolean flush)
+	public void stream(OutputStreamWriter writer, boolean flush)
 			throws IOException {
 		if(getParent() != null) {
-			getParent().streamXmlPartially(writer, this);
-			streamPartially(writer);
-			if(flush) {
-				writer.flush();
-			}
-			return this;
+			getParent().streamXmlPartially(writer, this, this);
+		} else {
+			streamXml(writer);
 		}
-		streamXml(writer);
 		if(flush) {
 			writer.flush();
 		}
-		return this;
 	}
-	
-	private void streamPartially(OutputStreamWriter writer) throws IOException {
-        if(children.size() > 0) {
-			streamStart(writer);
-	        for (Iterator<XmlNode> iter = children.iterator(); iter.hasNext();) {
-	            XmlNode child = iter.next();
-	            iter.remove();
-	            child.setParent(null);
-	            child.streamXml(writer);
-	            hasStreamedAChild = true;
-	            child.release();
-	        }
-        }
-	}
-	
+		
 	/**
 	 * @see org.pragmaticsoftwaresolutions.streamxml.V0.xml.core.XmlNode#stream(java.io.OutputStreamWriter)
 	 */
@@ -218,7 +199,7 @@ public class XmlElementV0 implements Element, XmlElement {
 	 * @see org.pragmaticsoftwaresolutions.Element.core.Tag#streamXmlPartially(java.io.OutputStreamWriter, org.pragmaticsoftwaresolutions.streamxml.V0.xml.core.XmlNode)
 	 */
 	@Override
-	public void streamXmlPartially(OutputStreamWriter writer, XmlNode child)
+	public void streamXmlPartially(OutputStreamWriter writer, XmlNode child, XmlNode callingDecendentChild)
 			throws IOException {
         boolean isChild = false;
         for (Iterator<XmlNode> iter = children.iterator(); iter.hasNext();) {
@@ -232,12 +213,12 @@ public class XmlElementV0 implements Element, XmlElement {
             throw new IllegalArgumentException("The passed element isn't a child of this element.");
         }
         if(getParent() != null) {
-            getParent().streamXmlPartially(writer, this);
+            getParent().streamXmlPartially(writer, this, callingDecendentChild);
         }
         streamStart(writer);
         for (Iterator<XmlNode> iter = children.iterator(); iter.hasNext();) {
         	XmlNode aChild = (XmlNode) iter.next();
-            if(aChild == child) {
+            if(aChild == child && aChild != callingDecendentChild) {
                 break;
             }
             aChild.setParent(null);
